@@ -1,0 +1,40 @@
+name: Download Realtor Metro Data (Twice Daily)
+
+on:
+  schedule:
+    - cron: '0 10 1-7 * *'  # Morning UTC
+    - cron: '0 18 1-7 * *'  # Midday UTC
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
+      - name: Run download script
+        run: |
+          python download_realtor_metro_data.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/realtor_metro_data.csv
+          CHANGES=$(git status --porcelain)
+          if [ -n "$CHANGES" ]; then
+            git commit -m "Update Realtor metro data"
+            git push
+          else
+            echo "No changes to commit"
