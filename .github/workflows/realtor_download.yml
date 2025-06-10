@@ -2,11 +2,9 @@ name: Download Realtor Metro Data (Twice Daily)
 
 on:
   schedule:
-    # Morning run: 10:00 UTC
-    - cron: '0 10 1-7 * *'
-    # Midday run: 18:00 UTC
-    - cron: '0 18 1-7 * *'
-  workflow_dispatch:  # Allows manual runs
+    - cron: '0 10 1-7 * *'  # Morning
+    - cron: '0 18 1-7 * *'  # Midday
+  workflow_dispatch:
 
 jobs:
   download:
@@ -22,12 +20,14 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python dependencies
-        run: pip install requests
+        run: |
+          pip install requests
 
       - name: Run download script
-        run: python download_realtor_metro_data.py
+        run: |
+          python download_realtor_metro_data.py
 
-      - name: Commit and push (only if changed)
+      - name: Commit and push if file changed
         shell: bash
         run: |
           git config user.name "github-actions"
