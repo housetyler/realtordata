@@ -1,16 +1,19 @@
-name: Download Realtor Metro Data
+name: Download Realtor Metro Data (Twice Daily)
 
 on:
   schedule:
-    - cron: '0 10 1-7 * *'  # Run daily at 10:00 UTC from the 1st to 7th of every month
-  workflow_dispatch:         # Optional: manual trigger from GitHub UI
+    # Morning run: 10:00 UTC (5AM EST / 6AM EDT)
+    - cron: '0 10 1-7 * *'
+    # Midday run: 18:00 UTC (1PM EST / 2PM EDT)
+    - cron: '0 18 1-7 * *'
+  workflow_dispatch:
 
 jobs:
   download:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -24,9 +27,10 @@ jobs:
       - name: Run download script
         run: python download_realtor_metro_data.py
 
-      - name: Commit and push if data changed
+      - name: Commit and push
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/realtor_metro_data.csv
-          git diff --cached --quiet || (git commit -m "Update Realtor metro data" && git push)
+          git commit -m "Update Realtor metro data"
+          git push
