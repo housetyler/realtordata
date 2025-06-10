@@ -20,21 +20,14 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python dependencies
-        run: |
-          pip install requests
+        run: pip install requests
 
       - name: Run download script
-        run: |
-          python download_realtor_metro_data.py
+        run: python download_realtor_metro_data.py
 
-      - name: Commit and push if changed
+      - name: Commit and push if file changed
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/realtor_metro_data.csv
-          CHANGES=$(git status --porcelain)
-          if [ -n "$CHANGES" ]; then
-            git commit -m "Update Realtor metro data"
-            git push
-          else
-            echo "No changes to commit"
+          git diff --cached --quiet || (git commit -m "Update Realtor metro data" && git push)
