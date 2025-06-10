@@ -6,7 +6,7 @@ on:
     - cron: '0 10 1-7 * *'
     # Midday run: 18:00 UTC
     - cron: '0 18 1-7 * *'
-  workflow_dispatch:  # Allows manual runs from GitHub
+  workflow_dispatch:  # Allows manual runs
 
 jobs:
   download:
@@ -28,6 +28,7 @@ jobs:
         run: python download_realtor_metro_data.py
 
       - name: Commit and push (only if changed)
+        shell: bash
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
