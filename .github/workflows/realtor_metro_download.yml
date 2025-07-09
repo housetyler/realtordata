@@ -2,8 +2,8 @@ name: Download Realtor Metro Data (Twice Daily)
 
 on:
   schedule:
-    - cron: '0 10 1-7 * *'  # Morning UTC
-    - cron: '0 18 1-7 * *'  # Midday UTC
+    - cron: '0 10 1-12 * *'  # Morning UTC
+    - cron: '0 18 1-12 * *'  # Midday UTC
   workflow_dispatch:
 
 jobs:
